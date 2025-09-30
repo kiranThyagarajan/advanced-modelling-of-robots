@@ -31,8 +31,9 @@ def igm(x, y, gamma1, gamma2):
 
 
 def dgm_passive(q11, q21, assembly_mode):
-    q12 = 0.0
-    q22 = 0.0
+    x,y = dgm(q11, q21, assembly_mode)
+    q12 = np.arctan2(y/l - np.sin(q11), x/l + d/(2*l) - np.cos(q11)) - q11
+    q22 = np.arctan2(y/l - np.sin(q21), x/l + d/(2*l) - np.cos(q21)) - q21
     return q12, q22
 
 
