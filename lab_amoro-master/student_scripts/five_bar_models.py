@@ -11,8 +11,16 @@ mR = 0.5
 
 
 def dgm(q11, q21, assembly_mode):
-    x = 0
-    y = 0
+    A22H = 0.5 * np.array([[- l * np.cos(q21) - d + l * np.cos(q11)], [-l * np.sin(q21) + l * np.sin(q11)]])
+    OA21 = np.array([[0.5 * d], [0.0]])
+    A21A22 = np.array([[l * np.cos(q21)], [l * np.sin(q21)]])
+    a = 0.5 * d + l * np.cos(q21)
+    h = np.sqrt(l*2 - a*2)
+    HA13 = assembly_mode * (h/a) * (np.array([[0.0, -1.0], [1.0, 0.0]]) @ A22H)
+    A22H = np.array([[-a], [0.0]])
+    OA13 = OA21 + A21A22 + A22H + HA13
+    x = OA13[0]
+    y = OA13[1] 
     return x, y
 
 
