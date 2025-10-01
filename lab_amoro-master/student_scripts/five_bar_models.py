@@ -98,8 +98,11 @@ def compute_A_B(q11, q12, q21, q22):
 
 
 def dkm(q11, q12, q21, q22, q11D, q21D):
-    xD = 0
-    yD = 0
+    A,B = compute_A_B(q11, q12, q21, q22)
+    qD = np.array([q11D, q21D])
+    psiD = np.linalg.inv(A) @ B @ qD
+    xD = psiD[0]
+    yD = psiD[1]
     return xD, yD
 
 
