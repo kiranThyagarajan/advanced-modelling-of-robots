@@ -116,8 +116,19 @@ def ikm(q11, q12, q21, q22, xD, yD):
 
 
 def dkm_passive(q11, q12, q21, q22, q11D, q21D, xD, yD):
-    q12D = 0
-    q22D = 0
+    v12 = compute_v12(compute_u12(q11, q12))
+    v22 = compute_v22(compute_u22(q21, q22))
+    v11 = compute_v11(compute_u11(q11))
+    v21 = compute_v21(compute_u21(q21))
+    v = np.array([v12, v22])
+    psiD = np.array([xD, yD])
+    a = l*v12.dot(v11) + l
+    b = l*v22.dot(v21) + l
+    C = np.array([[a,0], [0,b]])
+    qD = np.array([q11D, q21D])
+    qpD = (1/l) * (v.dot(psiD) - C @ qD)
+    q12D = qpD[0]
+    q22D = qpD[1]
     return q12D, q22D
 
 
