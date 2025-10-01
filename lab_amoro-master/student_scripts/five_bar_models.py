@@ -107,8 +107,11 @@ def dkm(q11, q12, q21, q22, q11D, q21D):
 
 
 def ikm(q11, q12, q21, q22, xD, yD):
-    q11D = 0
-    q21D = 0
+    A,B = compute_A_B(q11, q12, q21, q22)
+    psiD = np.array([xD, yD])
+    qD =  np.linalg.inv(B) @ A @ psiD 
+    q11D = qD[0]
+    q21D = qD[1]
     return q11D, q21D
 
 
