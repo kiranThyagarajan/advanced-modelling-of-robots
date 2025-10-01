@@ -25,8 +25,21 @@ def dgm(q11, q21, assembly_mode):
 
 
 def igm(x, y, gamma1, gamma2):
-    q11 = 0
-    q21 = 0
+    qA11A13 = np.array([x + 0.5 * d, y])
+    A11M1 = 0.5 * A11A13
+    c = np.linalg.norm(A11M1)
+    b = np.sqrt(l*2 - c*2)
+    M1A12 = gamma1 * (b/c) * (np.array([[0, -1], [1.0, 0.0]]) @ A11M1)
+    A11A12 = A11M1 + M1A12  
+    q11 = np.arctan2(A11A12[1], A11A12[0])
+    
+    A21A13 = np.array([ x - d * 0.5, y])
+    A21M2 = 0.5 * A21A13
+    c = np.linalg.norm(A21M2)
+    b = np.sqrt(l*2 - c*2)
+    M2A22 = gamma2 * (b/c) * (np.array([[0, -1], [1.0, 0.0]]) @ A21M2)
+    A21A22 = A21M2 + M2A22
+    q21 = np.arctan2(A21A22[1], A21A22[0])
     return q11, q21
 
 
