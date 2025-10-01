@@ -51,10 +51,50 @@ def dgm_passive(q11, q21, assembly_mode):
 
 
 # You can create intermediate functions to avoid redundant code
-def compute_A_B(q11, q12, q21, q22, ):
-    A = 0
-    B = 0
-    return A, B
+def compute_u11(q11):
+	u11 = np.array([cos(q11), sin(q11)])
+	return u11
+
+def compute_u12(q11, q12):
+	u12 = np.array([cos(q11 + q12), sin(q11 + q12)])
+	return u12
+	
+def compute_u21(q21):
+	u21 = np.array([cos(q21), sin(q21)])
+	return u21
+	
+def compute_u22(q21, q22):
+	u22 = np.array([cos(q21 + q22), sin(q21 + q22)])
+	return u22
+	
+def rotate_90_counterclockwise(v):
+	rotation_matrix = np.array([[0, -1], [1,  0]])
+	return rotation_matrix @ v
+	
+def compute_v11(u11):
+	v11 = rotate_90_counterclockwise(u11)
+	return v11
+
+def compute_v12(u12):
+	v12 = rotate_90_counterclockwise(u12)
+	return v12
+	
+def compute_v21(u21):
+	v21 = rotate_90_counterclockwise(u21)
+	return v21
+		
+def compute_v22(u22):
+	v22 = rotate_90_counterclockwise(u22)
+	return v22
+
+def compute_A_B(q11, q12, q21, q22):
+	u12 = compute_u12(q11, q12)
+	u22 = compute_u22(q21, q22)
+	v11 = compute_v11(compute_u11(q11))
+	v21 = compute_v21(compute_u21(q21))
+	A = np.array([u12, u22])
+	B = np.array([[l * u12.dot(v11), 0], [0, l * u22.dot(v21)]])
+	return A, B
 
 
 def dkm(q11, q12, q21, q22, q11D, q21D):
