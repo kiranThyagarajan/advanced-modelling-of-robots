@@ -23,8 +23,8 @@ def dgm(q11, q21, assembly_mode):
 
 
 def igm(x, y, gamma1, gamma2):
-    q11 = 0
-    q21 = 0
+    q11 = y + gamma1 * np.sqrt(l**2 - (x + d/2)**2)
+    q21 = y + gamma2 * np.sqrt(l**2 - (x - d/2)**2)
     return q11, q21
 
 
