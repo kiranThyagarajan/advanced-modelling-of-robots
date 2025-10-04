@@ -29,8 +29,9 @@ def igm(x, y, gamma1, gamma2):
 
 
 def dgm_passive(q11, q21, assembly_mode):
-    q12 = 0.0
-    q22 = 0.0
+    x, y = dgm(q11, q21, assembly_mode)
+    q12 = atan2(y - q11, x + d/2)
+    q22 = atan2(y - q21, x - d/2)
     return q12, q22
 
 
