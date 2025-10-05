@@ -34,11 +34,21 @@ def dgm_passive(q11, q21, assembly_mode):
     q22 = atan2(y - q21, x - d/2)
     return q12, q22
 
+def compute_unit_vectors(q12, q22):
+    u1 = np.array([cos(q12), sin(q12)])
+    u2 = np.array([cos(q22), sin(q22)])
+    x0 = np.array([1, 0]) 
+    y0 = np.array([0, 1])
+    v1 = np.array([-u1[1], u1[0]]) #rotate u1 by 90 degrees ccw
+    v2 = np.array([-u2[1], u2[0]]) #rotate u2 by 90 degrees ccw
+    return u1, u2, x0, y0, v1, v2
+
 
 # You can create intermediate functions to avoid redundant code
-def compute_A_B(q11, q12, q21, q22, ):
-    A = 0
-    B = 0
+def compute_A_B(q11, q12, q21, q22):
+    u1, u2, _, y0, _, _ = compute_unit_vectors(q12, q22)
+    A = np.array([u1,u2])
+    B = np.array([[np.dot(u1, y0), 0],[0, np.dot(u2, y0)]])
     return A, B
 
 
