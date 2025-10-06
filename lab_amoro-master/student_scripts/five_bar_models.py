@@ -131,22 +131,49 @@ def dkm_passive(q11, q12, q21, q22, q11D, q21D, xD, yD):
     q22D = qpD[1]
     return q12D, q22D
 
+def compute_d_matrix(q11, q21, q12, q22, q11D, q12D, q21D, q22D, l):
+	u11 = compute_u11(q11)
+	u21 = compute_u21(q21)
+	u12 = compute_u12(q11, q12)
+	u22 = compute_u22(q21, q22)
+	return np.array([-l * q11D**2 * np.dot(u12.T, u11) - l*(q11D + q12D)**2, -l * q21D**2 * np.dot(u22.T, u21) - l*(q21D + q22D)**2])
+
 
 def dkm2(q11, q12, q21, q22, q11D, q12D, q21D, q22D, q11DD, q21DD):
-    xDD = 0
-    yDD = 0
+    A, B = compute_A_B(q11, q12, q21, q22)
+    d_matrix = compute_d_matrix(q11, q21, q12, q22, q11D, q12D, q21D, q22D, l)
+    qDD = np.array([q11DD, q21DD])
+    ksiDD = np.linalg.inv(A) @ (B @ qDD + d_matrix) 
+    xDD = ksiDD[0]
+    yDD = ksiDD[1]
     return xDD, yDD
 
 
 def ikm2(q11, q12, q21, q22, q11D, q12D, q21D, q22D, xDD, yDD):
-    q11DD = 0
-    q21DD = 0
+    A, B = compute_A_B(q11, q12, q21, q22)
+    d_matrix = compute_d_matrix(q11, q21, q12, q22, q11D, q12D, q21D, q22D, l)
+    ksiDD = np.array([xDD, yDD])
+    qDD = np.linalg.inv(B) @ ((A @ ksiDD) - d_matrix) 
+    q11DD = qDD[0]
+    q21DD = qDD[1] 
     return q11DD, q21DD
 
 
 def dkm2_passive(q11, q12, q21, q22, q11D, q12D, q21D, q22D, q11DD, q21DD, xDD, yDD):
-    q12DD = 0
-    q22DD = 0
+    v12 = compute_v12(compute_u12(q11, q12))
+    v22 = compute_v22(compute_u22(q21, q22))
+    v11 = compute_v11(compute_u11(q11))
+    v21 = compute_v21(compute_u21(q21))
+    u11 = compute_u11(q11)
+    u21 = compute_u21(q21)
+    v = np.array([v12, v22])
+    psiDD = np.array([xDD, yDD])
+    B = np.array([[l*v12.dot(v11) + l,0], [0,l*v22.dot(v21) + l]])
+    d_passive = np.array([-l * q11D**2 *np.dot(v12, u11), -l * q21D**2 * np.dot(v22, u21)])
+    qDD = np.array([q11DD, q21DD])
+    qpDD = (1/l) * (v.dot(psiDD) - d_passive - B @ qDD)
+    q12DD = qpDD[0]
+    q22DD = qpDD[1]
     return q12DD, q22DD
 
 
