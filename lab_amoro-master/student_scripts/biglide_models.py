@@ -81,20 +81,31 @@ def dkm_passive(q11, q12, q21, q22, q11D, q21D, xD, yD):
 
 
 def dkm2(q11, q12, q21, q22, q11D, q12D, q21D, q22D, q11DD, q21DD):
-    xDD = 0
-    yDD = 0
+    A, B = compute_A_B(q11, q12, q21, q22)
+    d = l*np.array([q12D**2, q22D**2])
+    ksiDD = np.linalg.inv(A) @ (B @ np.array([q11DD, q21DD]) - d)
+    xDD = ksiDD[0]
+    yDD = ksiDD[1]
     return xDD, yDD
 
 
 def ikm2(q11, q12, q21, q22, q11D, q12D, q21D, q22D, xDD, yDD):
-    q11DD = 0
-    q21DD = 0
+    A, B = compute_A_B(q11, q12, q21, q22)
+    d = l*np.array([q12D**2, q22D**2])
+    qDD = np.linalg.inv(B) @ (A @ np.array([xDD, yDD]) + d)
+    q11DD = qDD[0]
+    q21DD = qDD[1]
     return q11DD, q21DD
 
 
 def dkm2_passive(q11, q12, q21, q22, q11D, q12D, q21D, q22D, q11DD, q21DD, xDD, yDD):
-    q12DD = 0
-    q22DD = 0
+    _, _, _, y0, v1, v2 = compute_unit_vectors(q12, q22)
+    A_passive = np.array([v1, v2])
+    B_passive = np.array([[np.dot(v1, y0), 0], [0, np.dot(v2, y0)]])
+    ksiDD = np.array([xDD, yDD])
+    qDD = (A_passive @ ksiDD - B_passive @ np.array([q11DD, q21DD]))/l
+    q12DD = qDD[0]
+    q22DD = qDD[1]
     return q12DD, q22DD
 
 
