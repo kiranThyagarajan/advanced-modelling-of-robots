@@ -10,13 +10,13 @@ mf = 1.0
 
 
 def dgm(q11, q21, assembly_mode):
-    OC = OA2 + A2M + MC
     OA1 = np.array([-d/2, q11])
     OA2 = np.array([d/2, q21])
     A2M = 0.5 * (OA1 - OA2)
-    h = np.sqrt(l*2 - a*2)
     a = np.linalg.norm(A2M)
-    MC = assembly_mode * (h/a) * np.array([[0, -1], [1, 0]])
+    h = np.sqrt(l**2 - a**2)
+    MC = assembly_mode * (h/a) * (np.array([[0, -1], [1, 0]]) @ A2M)
+    OC = OA2 + A2M + MC
     x = OC[0]
     y = OC[1]
     return x, y
